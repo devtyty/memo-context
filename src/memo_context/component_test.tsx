@@ -47,8 +47,8 @@ const TestConsumer = () => {
             <button
               onClick={() =>
                 dispatch({
-                  type: "increment",
-                  // label: `label: ${contextNe.state.count}`,
+                  type: "update-label",
+                  label: `label: ${state.count}`,
                 })
               }
               style={{ backgroundColor: "#D4D4D4", borderColor: "#D4D4D4" }}

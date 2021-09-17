@@ -1,5 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
+import ComponentTest from './memo_context/component_test';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         >
           Learn React
         </a>
+        <ComponentTest />
       </header>
     </div>
   );

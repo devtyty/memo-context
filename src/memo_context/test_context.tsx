@@ -57,9 +57,9 @@ const saleRecordReducer = (state = {...initData}, action: Action): SalesRecordSt
       };
     case 'decrement':
       if (state.count > 0) {
-        state.count--;
         return {
           ...state,
+          count: state.count - 1,
         };
       }
       return state;
