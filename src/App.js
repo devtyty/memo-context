@@ -1,6 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
-import ComponentTest from './memo_context/component_test';
+import ComponentTest from './component_test';
 
 function App() {
   return (

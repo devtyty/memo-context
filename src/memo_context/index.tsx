@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { initSaleRecord, saleRecordReducer } from "./reducer";
-import { Types } from "./type";
+import SaleRecordSaga from "./sagas";
+import Types from "./type";
 
 const MyContextContext = React.createContext<
   Types.PropsContextState | undefined
@@ -12,7 +13,11 @@ const MyContextProvider = React.memo((props: Types.PropsProvider) => {
   });
 
   ///State
-  const value = { state, dispatch };
+  const value: Types.PropsContextState = {
+    state,
+    sagaController: new SaleRecordSaga(dispatch),
+    dispatchReducer: dispatch,
+  };
   return (
     <MyContextContext.Provider value={value}>
       {props.children}

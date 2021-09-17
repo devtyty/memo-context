@@ -1,25 +1,21 @@
+import Types from './type';
 
-import { Types } from './type';
-
-export interface SalesRecordState {
-  count: number;
-  label: string;
-}
-
-export const initSaleRecord: SalesRecordState = {
+export const initSaleRecord: Types.SalesRecordState = {
   count: 0,
-  label: 'my label',
+  label: "my label",
 };
 
-
-export const saleRecordReducer = (state = { ...initSaleRecord }, action: Types.ActionReducer): SalesRecordState => {
+export const saleRecordReducer = (
+  state = { ...initSaleRecord },
+  action: Types.ActionReducer
+): Types.SalesRecordState => {
   switch (action.type) {
-    case 'increment':
+    case "increment":
       return {
         ...state,
         count: state.count + 1,
       };
-    case 'decrement':
+    case "decrement":
       if (state.count > 0) {
         return {
           ...state,
@@ -27,15 +23,15 @@ export const saleRecordReducer = (state = { ...initSaleRecord }, action: Types.A
         };
       }
       return state;
-    case 'render':
+    case "render":
       return {
         ...state,
-      }
-    case 'update-label':
+      };
+    case "update-label":
       return {
         ...state,
         label: action.label,
-      }
+      };
     default:
       return state;
   }

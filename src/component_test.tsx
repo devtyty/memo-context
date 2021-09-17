@@ -1,5 +1,5 @@
 import React from "react";
-import { MyContextConsumer, MyContextProvider } from ".";
+import { MyContextConsumer, MyContextProvider } from "./memo_context";
 
 interface Props {}
 
@@ -17,14 +17,13 @@ const TestConsumer = () => {
       <MyContextConsumer
         shouldBuild={(curr, next) => curr.count !== next.count}
       >
-        {({ state, dispatch }) => {
-          console.log("render count");
-
+        {({ state, dispatchReducer, sagaController }) => {
+          console.log('render count');
           return (
             <div>
               <div>{state.count}</div>
               <button
-                onClick={() => dispatch({ type: "increment" })}
+                onClick={() => sagaController.requestApi({payload: 'payload'})}
                 style={{ backgroundColor: "#D4D4D4", borderColor: "#D4D4D4" }}
                 type="button"
                 className="px-5 mt-3 btn btn-secondary"
@@ -32,7 +31,7 @@ const TestConsumer = () => {
                 Tăng
               </button>
               <button
-                onClick={() => dispatch({ type: "decrement" })}
+                onClick={() => dispatchReducer({ type: "decrement" })}
                 style={{ backgroundColor: "#D4D4D4", borderColor: "#D4D4D4" }}
                 type="button"
                 className="px-5 mt-3 btn btn-secondary"
@@ -47,7 +46,7 @@ const TestConsumer = () => {
       <MyContextConsumer
         shouldBuild={(curr, next) => curr.label !== next.label}
       >
-        {({ state, dispatch }) => {
+        {({ state, dispatchReducer }) => {
           console.log("render label");
 
           return (
@@ -55,7 +54,7 @@ const TestConsumer = () => {
               <div>{state.label}</div>
               <button
                 onClick={() =>
-                  dispatch({
+                  dispatchReducer({
                     type: "update-label",
                     label: `label: ${Date.now()}`,
                   })

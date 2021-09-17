@@ -1,45 +1,52 @@
-import { SalesRecordState } from "./reducer";
+import SaleRecordSaga from "./sagas";
 
-export declare module Types {
-
+declare module Types {
   /**
    * Provider type
    */
-  export interface PropsProvider {
+  interface PropsProvider {
     children: React.ReactNode;
   }
 
-
   /**Props holding memo selector component */
-  export interface PropsSelector {
+  interface PropsSelector {
     children: (context: PropsContextState) => React.ReactNode;
     context: PropsContextState;
   }
 
-
   /**
    * Reducer type
    */
-  export interface PropsContextState {
+  
+  interface PropsContextState {
     state: SalesRecordState;
-    dispatch: Dispatch;
+    dispatchReducer: DispatchReducer;
+    sagaController: SaleRecordSaga;
   }
 
-  export interface PropsConsumer {
+  interface PropsConsumer {
     children: (context: PropsContextState) => React.ReactNode;
-    shouldBuild?: (currentState: SalesRecordState, nextState: SalesRecordState) => boolean;
+    shouldBuild?: (
+      currentState: SalesRecordState,
+      nextState: SalesRecordState
+    ) => boolean;
   }
 
   /**
    * Dispatcher and Actions reducer
    */
 
-   export type Dispatch = (action: ActionReducer) => void;
-    export type ActionReducer = { type: 'increment' } | { type: 'decrement' } | { type: 'render' } | { type: 'update-label'; label: string; };
-  
+  type DispatchReducer = (action: ActionReducer) => void;
+  type ActionReducer =
+     | { type: "increment" }
+     | { type: "decrement" }
+     | { type: "render" }
+     | { type: "update-label"; label: string };
 
-
-  /**
-   * State management
-   */
+  interface SalesRecordState {
+     count: number;
+     label: string;
+   }
 }
+
+export default Types;
