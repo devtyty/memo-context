@@ -1,22 +1,25 @@
 import { SalesRecordState } from "./reducer";
 
 export declare module Types {
-  /**
-   * Types
-   */
 
+  /**
+   * Provider type
+   */
   export interface PropsProvider {
     children: React.ReactNode;
   }
 
+
+  /**Props holding memo selector component */
   export interface PropsSelector {
     children: (context: PropsContextState) => React.ReactNode;
     context: PropsContextState;
   }
 
 
-
-
+  /**
+   * Reducer type
+   */
   export interface PropsContextState {
     state: SalesRecordState;
     dispatch: Dispatch;
@@ -28,11 +31,12 @@ export declare module Types {
   }
 
   /**
-   * Dispatcher and Actions
+   * Dispatcher and Actions reducer
    */
 
    export type Dispatch = (action: ActionReducer) => void;
-   export type ActionReducer = { type: 'increment' } | { type: 'decrement' } | { type: 'render' } | { type: 'update-label'; label: string; };
+    export type ActionReducer = { type: 'increment' } | { type: 'decrement' } | { type: 'render' } | { type: 'update-label'; label: string; };
+  
 
 
   /**

@@ -1,5 +1,5 @@
 import React from "react";
-import { MyContextConsumer, MyContextProvider, useMyContext } from ".";
+import { MyContextConsumer, MyContextProvider } from ".";
 
 interface Props {}
 
