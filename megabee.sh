@@ -15,11 +15,18 @@ function create-context() {
     CONTEXT_NAME="$1"
 
     if [ "$PATH_FOLDER" != "" -a "$CONTEXT_NAME" != "" ]
-    then 
+    then
+        _pathOrigin="$PWD/""$PATH_FOLDER/""$CONTEXT_NAME"
         # Create folder context api
-        _pathName="$PWD/""$PATH_FOLDER/""BusinessLogic"
-        rm -r $_pathName
+        _pathName="$_pathOrigin/""BusinessLogic"
+
+        rm -rf $_pathOrigin
+
+        mkdir $_pathOrigin
         mkdir $_pathName
+
+        createUIFile
+
         #Create file index business logic
         createIndex
         createSagas
@@ -28,6 +35,55 @@ function create-context() {
     else
         tutorial
     fi
+}
+
+function createUIFile() {
+  cat <<EOT >> $_pathOrigin/index.tsx
+import React from "react";
+import { ${CONTEXT_NAME}Consumer, ${CONTEXT_NAME}Provider } from "./BusinessLogic";
+
+interface Props {}
+
+const ${CONTEXT_NAME}: React.FC<Props> = (props: Props) => {
+  return (
+    <${CONTEXT_NAME}Provider>
+      <div>
+        <${CONTEXT_NAME}Consumer shouldBuild={(curr, next) => curr.count !== next.count}>
+          {({ state, dispatchReducer, sagaController }) => {
+            return (
+              <div>
+                <div>{state.count}</div>
+                <button
+                  onClick={() =>
+                    sagaController.requestApi({ payload: "payload" })
+                  }
+                  style={{ backgroundColor: "#D4D4D4", borderColor: "#D4D4D4" }}
+                  type="button"
+                  className="px-5 mt-3 btn btn-secondary"
+                >
+                  Increase
+                </button>
+                <button
+                  onClick={() => dispatchReducer({ type: "decrement" })}
+                  style={{ backgroundColor: "#D4D4D4", borderColor: "#D4D4D4" }}
+                  type="button"
+                  className="px-5 mt-3 btn btn-secondary"
+                >
+                  Decrease
+                </button>
+              </div>
+            );
+          }}
+        </${CONTEXT_NAME}Consumer>
+      </div>
+    </${CONTEXT_NAME}Provider>
+  );
+};
+
+export default ${CONTEXT_NAME};
+
+EOT
+    echo "${green}Create types file successfully!${reset}"
 }
 
 function createIndex() {
@@ -95,7 +151,7 @@ const MySelectorComponent = React.memo((props: Types.PropsSelector) => {
               style={{ backgroundColor: "#D4D4D4", borderColor: "#D4D4D4" }}
               type="button"
               className="px-5 mt-3 btn btn-secondary"
-            >{`label`}</button>
+            >{'label'}</button>
           </div>
         );
       }}
