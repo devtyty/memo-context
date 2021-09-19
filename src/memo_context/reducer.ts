@@ -23,10 +23,6 @@ export const saleRecordReducer = (
         };
       }
       return state;
-    case "render":
-      return {
-        ...state,
-      };
     case "update-label":
       return {
         ...state,

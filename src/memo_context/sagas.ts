@@ -1,6 +1,5 @@
 import Types from './type';
 
-
 export default class SaleRecordSaga {
   dispatchReducer: Types.DispatchReducer;
   
