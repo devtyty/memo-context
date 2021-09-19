@@ -20,3 +20,5 @@ You will also see any lint errors in the console.
 Open terminal by project ./project_folder.\
 run terminal cli: source megabee.sh.\
 It will show syntax to create a folder for context api
+
+![](src/asset/demo.mp4)
