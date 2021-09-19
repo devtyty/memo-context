@@ -17,6 +17,6 @@ You will also see any lint errors in the console.
 ### `Generate code context-api structure`
 
 #### For MacOs
-Open terminal by project ./project_folder
-run [source megabee.sh]
-It will show syntax to create a folder for context api
+Open terminal by project ./project_folder.\
+run [source megabee.sh].\
+It will show syntax to create a folder for context api.\
