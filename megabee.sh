@@ -15,7 +15,7 @@ function create-context() {
     CONTEXT_NAME="$1"
 
     if [ "$PATH_FOLDER" != "" -a "$CONTEXT_NAME" != "" ]
-    then 
+    then
         _pathOrigin="$PWD/""$PATH_FOLDER/""$CONTEXT_NAME"
         # Create folder context api
         _pathName="$_pathOrigin/""BusinessLogic"
@@ -319,8 +319,8 @@ EOT
 
 function tutorial() {
   echo "Cú pháp tạo flux architect bằng context api
-- SynTax: ${green} create-context <<Tên page hoặc thư mục>> <<Đường dẫn (VD: src/${CONTEXT_NAME})>>${reset}
-- Ví dụ: ${green} create-context ${CONTEXT_NAME} src${reset}
+- SynTax: ${green} create-context <<Tên page hoặc thư mục>> <<Đường dẫn (VD: src/login)>>${reset}
+- Ví dụ: ${green} create-context Login src${reset}
 "
 }
 
