@@ -18,5 +18,5 @@ You will also see any lint errors in the console.
 
 #### For MacOs
 Open terminal by project ./project_folder.\
-run [source megabee.sh].\
-It will show syntax to create a folder for context api.\
+run #####source megabee.sh].\
+It will show syntax to create a folder for context api
