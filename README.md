@@ -21,4 +21,6 @@ Open terminal by project ./project_folder.\
 run terminal cli: source megabee.sh.\
 It will show syntax to create a folder for context api
 
-![](src/asset/demo.mp4)
+https://user-images.githubusercontent.com/61624396/133923119-dfae8b0b-ee55-472d-8d9e-e1904cf8085e.mp4
+
+
