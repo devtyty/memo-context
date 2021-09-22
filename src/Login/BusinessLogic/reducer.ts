@@ -1,14 +1,12 @@
-import Types from './type';
-
-export const initSaleRecord: Types.SalesRecordState = {
+export const initLoginState: LoginState = {
   count: 0,
   label: "my label",
 };
 
-export const saleRecordReducer = (
-  state = { ...initSaleRecord },
-  action: Types.ActionReducer
-): Types.SalesRecordState => {
+export const LoginReducer = (
+  state = { ...initLoginState },
+  action: Action
+): LoginState => {
   switch (action.type) {
     case "increment":
       return {
@@ -32,3 +30,18 @@ export const saleRecordReducer = (
       return state;
   }
 };
+
+  export interface LoginState {
+    count: number;
+    label: string;
+  }
+
+  export type Action =
+    | { type: "increment" }
+    | { type: "decrement" }
+    | { type: "update-label"; label: string };
+
+  export type Dispatch = (action: Action) => void;
+
+
+

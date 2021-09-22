@@ -220,7 +220,7 @@ function createReducer() {
   cat <<EOT >> $_pathName/reducer.ts
 import Types from './type';
 
-export const init${CONTEXT_NAME}State: Types.SalesRecordState = {
+export const init${CONTEXT_NAME}State: Types.${CONTEXT_NAME}State = {
   count: 0,
   label: "my label",
 };
@@ -228,7 +228,7 @@ export const init${CONTEXT_NAME}State: Types.SalesRecordState = {
 export const ${CONTEXT_NAME}Reducer = (
   state = { ...init${CONTEXT_NAME}State },
   action: Types.ActionReducer
-): Types.SalesRecordState => {
+): Types.${CONTEXT_NAME}State => {
   switch (action.type) {
     case "increment":
       return {
@@ -279,7 +279,7 @@ declare module Types {
    */
   
   interface PropsContextState {
-    state: SalesRecordState;
+    state: ${CONTEXT_NAME}State;
     dispatchReducer: DispatchReducer;
     sagaController: ${CONTEXT_NAME}Saga;
   }
@@ -287,8 +287,8 @@ declare module Types {
   interface PropsConsumer {
     children: (context: PropsContextState) => React.ReactNode;
     shouldBuild?: (
-      currentState: SalesRecordState,
-      nextState: SalesRecordState
+      currentState: ${CONTEXT_NAME}State,
+      nextState: ${CONTEXT_NAME}State
     ) => boolean;
   }
 
@@ -303,7 +303,7 @@ declare module Types {
      | { type: "render" }
      | { type: "update-label"; label: string };
 
-  interface SalesRecordState {
+  interface ${CONTEXT_NAME}State {
      count: number;
      label: string;
    }

@@ -1,6 +1,7 @@
 import logo from './logo.svg';
 import './App.css';
-import ComponentTest from './component_test';
+import Login from './Login';
+import { LoginProvider } from './Login/BusinessLogic';
 
 function App() {
   return (
@@ -18,7 +19,7 @@ function App() {
         >
           Learn React
         </a>
-        <ComponentTest />
+        <LoginProvider><Login /></LoginProvider>
       </header>
     </div>
   );

@@ -1,13 +1,13 @@
-import Types from './type';
+import {Dispatch} from './reducer';
 
-export default class SaleRecordSaga {
-  dispatchReducer: Types.DispatchReducer;
+export default class LoginSaga {
+  dispatchReducer: Dispatch;
   
-  constructor(dispatch: Types.DispatchReducer) {
+  constructor(dispatch: Dispatch) {
     this.dispatchReducer = dispatch;
   }
 
-  requestApi(params: SaleRecordSaga.ParamType) {
+  requestApi(params: SagaType.ParamType) {
     ///Request api in here
     ///.........
     ///Update reducer: .....
@@ -15,7 +15,7 @@ export default class SaleRecordSaga {
   }
 }
 
-declare namespace SaleRecordSaga {
+export declare namespace SagaType {
   interface ParamType {
     ///....Props type
     payload: string;
