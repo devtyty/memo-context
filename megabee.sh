@@ -31,7 +31,6 @@ function create-context() {
         createIndex
         createSagas
         createReducer
-        createTypes
     else
         tutorial
     fi
@@ -82,20 +81,27 @@ const ${CONTEXT_NAME}: React.FC<Props> = (props: Props) => {
 
 export default ${CONTEXT_NAME};
 
+
 EOT
     echo "${green}Create types file successfully!${reset}"
 }
 
 function createIndex() {
     cat <<EOT >> $_pathName/index.tsx
-import React, { useEffect } from "react";
-import { init${CONTEXT_NAME}State, ${CONTEXT_NAME}Reducer } from "./reducer";
+import React from "react";
+import {
+  DispatchReducer,
+  init${CONTEXT_NAME}State,
+  ${CONTEXT_NAME}Reducer,
+  ${CONTEXT_NAME}State,
+} from "./reducer";
 import ${CONTEXT_NAME}Saga from "./sagas";
-import Types from "./type";
 
-const ${CONTEXT_NAME}Context = React.createContext<
-  Types.PropsContextState | undefined
->(undefined);
+const ${CONTEXT_NAME}Context = React.createContext<Types.PropsContextState>({
+  state: { ...init${CONTEXT_NAME}State },
+  sagaController: new ${CONTEXT_NAME}Saga(() => null),
+  dispatchReducer: () => null,
+});
 
 const ${CONTEXT_NAME}Provider = React.memo((props: Types.PropsProvider) => {
   const [state, dispatch] = React.useReducer(${CONTEXT_NAME}Reducer, {
@@ -115,7 +121,7 @@ const ${CONTEXT_NAME}Provider = React.memo((props: Types.PropsProvider) => {
   );
 });
 
-function use${CONTEXT_NAME}() {
+function use${CONTEXT_NAME}Context() {
   const context = React.useContext(${CONTEXT_NAME}Context);
   if (context === undefined) {
     throw new Error("useCount must be used within a CountProvider");
@@ -123,63 +129,38 @@ function use${CONTEXT_NAME}() {
   return context;
 }
 
-///Effective memo
-const MySelectorComponent = React.memo((props: Types.PropsSelector) => {
-  return <>{props.children(props.context)}</>;
+const ${CONTEXT_NAME}Consumer = React.memo(({ children }: Types.PropsConsumer) => {
+  return (
+    <${CONTEXT_NAME}Context.Consumer>
+      {(state) => children(state)}
+    </${CONTEXT_NAME}Context.Consumer>
+  );
 });
 
-/** Holding state: Just render UI when origin state changed and shouldBuild is true | undefined.
- * 
- * Example: 
- * \`\`\`
-  * <${CONTEXT_NAME}Consumer
-      shouldBuild={(curr, next) => curr.label !== next.label}
-    >
-      {({ state, dispatch }) => {
-        console.log("render label");
+export { ${CONTEXT_NAME}Provider, use${CONTEXT_NAME}Context, ${CONTEXT_NAME}Consumer };
 
-        return (
-          <div>
-            <div>{state.label}</div>
-            <button
-              onClick={() =>
-                dispatch({
-                  type: "update-label",
-                  label: \`label: \${Date.now()}\`,
-                })
-              }
-              style={{ backgroundColor: "#D4D4D4", borderColor: "#D4D4D4" }}
-              type="button"
-              className="px-5 mt-3 btn btn-secondary"
-            >{'label'}</button>
-          </div>
-        );
-      }}
-    </${CONTEXT_NAME}Consumer>
- * \`\`\`
-*/
-const ${CONTEXT_NAME}Consumer = React.memo(
-  ({ children, shouldBuild }: Types.PropsConsumer) => {
-    const context = use${CONTEXT_NAME}();
-
-    const [myState, setMyState] =
-      React.useState<Types.PropsContextState>(context);
-
-    useEffect(() => {
-      if (shouldBuild) {
-        if (shouldBuild(myState.state, context.state)) setMyState(context);
-      } else {
-        setMyState(context);
-      }
-    }, [context]);
-
-    return (
-      <MySelectorComponent context={myState}>{children}</MySelectorComponent>
-    );
+export declare module Types {
+  interface PropsProvider {
+    children: React.ReactNode;
   }
-);
 
-export { ${CONTEXT_NAME}Provider, use${CONTEXT_NAME}, ${CONTEXT_NAME}Consumer };
+  interface PropsContextState {
+    state: ${CONTEXT_NAME}State;
+    dispatchReducer: DispatchReducer;
+    sagaController: ${CONTEXT_NAME}Saga;
+  }
+
+  interface PropsConsumer {
+    children: (context: PropsContextState) => React.ReactNode;
+    shouldBuild?: (
+      currentState: ${CONTEXT_NAME}State,
+      nextState: ${CONTEXT_NAME}State
+    ) => boolean;
+  }
+}
+
+export default Types;
+
 
 EOT
     echo "${green}Create index file successfully!${reset}"
@@ -189,12 +170,11 @@ EOT
 # generate code sagas file
 function createSagas() {
   cat <<EOT >> $_pathName/sagas.ts
-import Types from './type';
-
+import { DispatchReducer } from "./reducer";
 export default class ${CONTEXT_NAME}Saga {
-  dispatchReducer: Types.DispatchReducer;
-  
-  constructor(dispatch: Types.DispatchReducer) {
+  dispatchReducer: DispatchReducer;
+
+  constructor(dispatch: DispatchReducer) {
     this.dispatchReducer = dispatch;
   }
 
@@ -202,7 +182,7 @@ export default class ${CONTEXT_NAME}Saga {
     ///Request api in here
     ///.........
     ///Update reducer: .....
-    this.dispatchReducer({ type: 'increment' });
+    this.dispatchReducer({ type: "increment" });
   }
 }
 
@@ -212,23 +192,34 @@ declare namespace ${CONTEXT_NAME}Saga {
     payload: string;
   }
 }
+
 EOT
   echo "${green}Create sagas file successfully!${reset}"
 }
 
 function createReducer() {
   cat <<EOT >> $_pathName/reducer.ts
-import Types from './type';
-
-export const init${CONTEXT_NAME}State: Types.SalesRecordState = {
+export const init${CONTEXT_NAME}State: ${CONTEXT_NAME}State = {
   count: 0,
   label: "my label",
 };
 
+export type DispatchReducer = (action: ActionReducer) => void;
+export type ActionReducer =
+  | { type: "increment" }
+  | { type: "decrement" }
+  | { type: "render" }
+  | { type: "update-label"; label: string };
+
+export interface ${CONTEXT_NAME}State {
+  count: number;
+  label: string;
+}
+
 export const ${CONTEXT_NAME}Reducer = (
   state = { ...init${CONTEXT_NAME}State },
-  action: Types.ActionReducer
-): Types.SalesRecordState => {
+  action: ActionReducer
+): ${CONTEXT_NAME}State => {
   switch (action.type) {
     case "increment":
       return {
@@ -252,69 +243,10 @@ export const ${CONTEXT_NAME}Reducer = (
       return state;
   }
 };
+
 EOT
     echo "${green}Create reducer file successfully!${reset}"
 }
-
-function createTypes() {
-  cat <<EOT >> $_pathName/type.ts
-import ${CONTEXT_NAME}Saga from "./sagas";
-
-declare module Types {
-  /**
-   * Provider type
-   */
-  interface PropsProvider {
-    children: React.ReactNode;
-  }
-
-  /**Props holding memo selector component */
-  interface PropsSelector {
-    children: (context: PropsContextState) => React.ReactNode;
-    context: PropsContextState;
-  }
-
-  /**
-   * Reducer type
-   */
-  
-  interface PropsContextState {
-    state: SalesRecordState;
-    dispatchReducer: DispatchReducer;
-    sagaController: ${CONTEXT_NAME}Saga;
-  }
-
-  interface PropsConsumer {
-    children: (context: PropsContextState) => React.ReactNode;
-    shouldBuild?: (
-      currentState: SalesRecordState,
-      nextState: SalesRecordState
-    ) => boolean;
-  }
-
-  /**
-   * Dispatcher and Actions reducer
-   */
-
-  type DispatchReducer = (action: ActionReducer) => void;
-  type ActionReducer =
-     | { type: "increment" }
-     | { type: "decrement" }
-     | { type: "render" }
-     | { type: "update-label"; label: string };
-
-  interface SalesRecordState {
-     count: number;
-     label: string;
-   }
-}
-
-export default Types;
-
-EOT
-    echo "${green}Create types file successfully!${reset}"
-}
-
 
 
 function tutorial() {
